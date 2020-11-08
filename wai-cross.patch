@@ -1,0 +1,13 @@
+diff --git a/wai-app-static/Network/Wai/Application/Static.hs b/wai-app-static/Network/Wai/Application/Static.hs
+index 225fb9ff..176fd9e1 100644
+--- a/Network/Wai/Application/Static.hs
++++ b/Network/Wai/Application/Static.hs
+@@ -233,8 +233,6 @@ staticAppPieces _ _ req sendResponse
+         H.status405
+         [("Content-Type", "text/plain")]
+         "Only GET or HEAD is supported"
+-staticAppPieces _ [".hidden", "folder.png"] _ sendResponse = sendResponse $ W.responseLBS H.status200 [("Content-Type", "image/png")] $ L.fromChunks [$(embedFile "images/folder.png")]
+-staticAppPieces _ [".hidden", "haskell.png"] _ sendResponse = sendResponse $ W.responseLBS H.status200 [("Content-Type", "image/png")] $ L.fromChunks [$(embedFile "images/haskell.png")]
+ staticAppPieces ss rawPieces req sendResponse = liftIO $ do
+     case toPieces rawPieces of
+         Just pieces -> checkPieces ss pieces req >>= response

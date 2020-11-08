@@ -1,0 +1,56 @@
+name: quoth-the-enterprise
+version: 0
+synopsis: Serve quotes from Star Trek scripts
+author: Joe Hermaszewski
+maintainer: Joe Hermaszewski <make.it.so@monoid.al>
+copyright: 2020 Joe Hermaszewski
+github: expipiplus1/projects/quoth-the-enterprise
+extra-source-files:
+- .gitignore
+- LICENSE
+- default.nix
+- package.yaml
+- readme.md
+
+executables:
+  quoth:
+    main: Main.hs
+    source-dirs: src
+    dependencies:
+    - base
+    - bytestring
+    - containers
+    - deepseq
+    - optparse-applicative
+    - optparse-generic >= 1.4.2
+    - random
+    - say
+    - servant
+    - servant-server
+    - tagsoup
+    - text
+    - vector
+    - wai
+    - warp
+
+ghc-options: -Wall
+
+default-extensions:
+- DataKinds
+- DeriveAnyClass
+- DeriveGeneric
+- DerivingStrategies
+- FlexibleContexts
+- FlexibleInstances
+- GeneralizedNewtypeDeriving
+- LambdaCase
+- OverloadedStrings
+- QuasiQuotes
+- RecordWildCards
+- ScopedTypeVariables
+- StandaloneDeriving
+- TemplateHaskell
+- TypeApplications
+- TypeFamilies
+- TypeOperators
+- ViewPatterns
