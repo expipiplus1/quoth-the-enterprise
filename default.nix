@@ -8,7 +8,7 @@ let
     pkgs.haskell.packages.${compiler};
 
 in haskellPackages.developPackage {
-  name = "";
+  name = "quoth-the-enterprise";
   root = pkgs.nix-gitignore.gitignoreSource [ ] ./.;
   overrides = with pkgs.haskell.lib;
     pkgs.lib.composeExtensions (self: _super: {
