@@ -18,6 +18,7 @@ The program and serves quotes as plain text under `quote/character-name` on port
 For example:
 
 ```
+$ quoth $(find quotes-dir -name '*.htm') &
 $ curl http://localhost:4747/quote/barclay
 Blurred vision, dizziness, palpitations, a stinging sensation in the lower spine. It's Terrelian Death Syndrome, isn't it.
 ```
