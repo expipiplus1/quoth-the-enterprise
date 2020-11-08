@@ -1,0 +1,71 @@
+# Based on https://kodimensional.dev/github-actions
+
+name: CI
+
+# Trigger the workflow on push or pull request, but only for the master branch
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+jobs:
+  cabal:
+    name: ghc ${{ matrix.ghc }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        cabal: [latest]
+        ghc: [8.8.4, 8.10.2]
+      fail-fast: false
+
+    steps:
+    - uses: cachix/install-nix-action@v12
+      with:
+        nix_path: nixpkgs=channel:nixos-unstable
+
+    - uses: actions/setup-haskell@v1.1
+      id: setup-haskell-cabal
+      name: Setup Haskell
+      with:
+        ghc-version: ${{ matrix.ghc }}
+        cabal-version: ${{ matrix.cabal }}
+
+    - uses: actions/checkout@v2
+
+    - uses: actions/cache@v1
+      name: Cache cabal-store
+      with:
+        path: ${{ steps.setup-haskell-cabal.outputs.cabal-store }}
+        key: ${{ runner.os }}-${{ matrix.ghc }}-cabal
+
+    - name: Build dependencies
+      run: |
+        cabal update
+        cabal build all --only-dependencies
+
+    - name: Build
+      run: cabal build all
+
+  nix:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: cachix/install-nix-action@v12
+      with:
+        extra_nix_config: |
+          trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= orion:s0C06f1M46DCpHUUP2r8iIrhfytkCbXWltMeMMa4jbw= expipiplus1/update-nix-fetchgit:Z33K0KEImsos+kVTFvZxfLxaBi+D1jEeB6cX0uCo7B0=
+          substituters = https://cache.nixos.org/ s3://nix-cache?region=ap-southeast-1&scheme=https&endpoint=binarycache.home.monoid.al
+          secret-key-files = /root/nix-sign.sec
+    - uses: actions/checkout@v2
+    - run: |
+        aws configure set aws_access_key_id nix
+        aws configure set aws_secret_access_key "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+        sudo cp -r ~/.aws /root/.aws
+        sudo sh -c 'printf "%s" "${{ secrets.NIX_SIGNING_KEY }}" > /root/nix-sign.sec'
+    - run: |
+        drvs=$(nix-instantiate | sed 's/!.*//')
+        nix-build --no-out-link $drvs
+        reqs=$(nix-store --query --requisites --include-outputs $drvs)
+        nix copy \
+          --to 's3://nix-cache?region=ap-southeast-1&scheme=https&endpoint=binarycache.home.monoid.al' \
+          $reqs
