@@ -1,7 +1,7 @@
 { nixpkgsSrc ? builtins.fetchTarball {
   url =
-    "https://github.com/expipiplus1/nixpkgs/archive/d732d4cee0c276f48b4de96ed69ccd6a660e9198.tar.gz"; # joe-haskell-cross
-  sha256 = "1dbizm8s6kr05r8g5in20h9ncc4fcwqvdph8bdgkgcr8a1g6y273";
+    "https://github.com/expipiplus1/nixpkgs/archive/14efdb229c6e08ba8d690de0d179f04b8d38e0b7.tar.gz"; # joe-haskell-cross-2
+  sha256 = "0sv5yd25q3w56hz279d9pfb4nyb4vnajbcjmxlgq9vmsfzdgkj2a";
 }, crossSystem ? null
 , pkgs ? (import nixpkgsSrc { inherit crossSystem; }).pkgsStatic
 , compiler ? null }:
