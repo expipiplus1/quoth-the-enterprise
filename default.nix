@@ -10,10 +10,6 @@ let
 in haskellPackages.developPackage {
   name = "quoth-the-enterprise";
   root = pkgs.nix-gitignore.gitignoreSource [ ] ./.;
-  overrides = with pkgs.haskell.lib;
-    pkgs.lib.composeExtensions (self: _super: {
-      optparse-generic = self.optparse-generic_1_4_4;
-      optparse-applicative = self.optparse-applicative_0_16_0_0;
-    }) extraOverrides;
+  overrides = extraOverrides;
   inherit modifier;
 }
